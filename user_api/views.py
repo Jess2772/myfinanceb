@@ -26,7 +26,7 @@ class UserRegister(APIView):
 			user = serializer.create(clean_data)
 			if user:
 				return Response(serializer.data, status=status.HTTP_201_CREATED)
-		return Response(status=status.HTTP_400_BAD_REQUEST)
+		return Response(status=status.HTTP_400_BAD_REQUEST, headers={"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "X-Requested-With, Content-Type"})
 
 
 class UserLogin(APIView):
