@@ -40,7 +40,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://incredible-caramel-35da02.netlify.app'
 ]
 CORS_ALLOW_CREDENTIALS = True
-
+CORS_ALLOW_ALL_ORIGINS = True
 # Application definition
 
 INSTALLED_APPS = [
