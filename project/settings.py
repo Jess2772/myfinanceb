@@ -29,7 +29,6 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', cast=bool)
 
 ALLOWED_HOSTS = [
-    '*'
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -39,7 +38,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://incredible-caramel-35da02.netlify.app'
 ]
 
-CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
   'accept',
