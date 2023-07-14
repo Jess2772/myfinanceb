@@ -39,6 +39,10 @@ CORS_ALLOWED_ORIGINS = [
     'https://myfinancejb-2225ee8966e8.herokuapp.com',
     'https://incredible-caramel-35da02.netlify.app'
 ]
+
+CORS_ORIGIN_WHITELIST = [
+    'https://incredible-caramel-35da02.netlify.app'
+]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORGIN_ALLOW_ALL = True
 # Application definition
