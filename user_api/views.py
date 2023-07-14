@@ -25,7 +25,9 @@ class UserRegister(APIView):
 		if serializer.is_valid(raise_exception=True):
 			user = serializer.create(clean_data)
 			if user:
-				return Response(serializer.data, status=status.HTTP_201_CREATED)
+				response = Response(serializer.data, status=status.HTTP_201_CREATED)
+				response['Access-Control-Allow-Origin'] = "*"
+				return response
 		return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -41,7 +43,9 @@ class UserLogin(APIView):
 		if serializer.is_valid(raise_exception=True):
 			user = serializer.check_user(data)
 			login(request, user)
-			return Response(serializer.data, status=status.HTTP_200_OK)
+			response = Response(serializer.data, status=status.HTTP_200_OK)
+			response['Access-Control-Allow-Origin'] = "*"
+			return response
 
 
 class UserLogout(APIView):
@@ -58,4 +62,6 @@ class UserView(APIView):
 	##
 	def get(self, request):
 		serializer = UserSerializer(request.user)
-		return Response({'user': serializer.data}, status=status.HTTP_200_OK)
+		response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
+		response['Access-Control-Allow-Origin'] = "*"
+		return response
