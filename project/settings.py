@@ -53,6 +53,21 @@ CORS_ALLOW_HEADERS = [
   'x-csrftoken',
   'x-requested-with']
 CORS_ALLOW_METHODS = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']
+
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'https://myfinancejb-2225ee8966e8.herokuapp.com',
+    'https://incredible-caramel-35da02.netlify.app'
+)
+
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'https://myfinancejb-2225ee8966e8.herokuapp.com',
+    'https://incredible-caramel-35da02.netlify.app'
+]
 # Application definition
 
 INSTALLED_APPS = [
