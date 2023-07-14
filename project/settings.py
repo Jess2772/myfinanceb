@@ -36,7 +36,8 @@ ALLOWED_HOSTS = [
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
-    'https://myfinancejb-2225ee8966e8.herokuapp.com'
+    'https://myfinancejb-2225ee8966e8.herokuapp.com',
+    'https://incredible-caramel-35da02.netlify.app'
 ]
 CORS_ALLOW_CREDENTIALS = True
 
