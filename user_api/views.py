@@ -23,6 +23,7 @@ class UserRegister(APIView):
 		clean_data = custom_validation(request.data)
 		serializer = UserRegisterSerializer(data=clean_data)
 		if serializer.is_valid(raise_exception=True):
+			print("valid credentials, registering")
 			user = serializer.create(clean_data)
 			if user:
 				response = Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -44,6 +45,7 @@ class UserLogin(APIView):
 		serializer = UserLoginSerializer(data=data)
 		if serializer.is_valid(raise_exception=True):
 			user = serializer.check_user(data)
+			print("Sending login request")
 			login(request, user)
 			response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
 			response['Access-Control-Allow-Origin'] = "*"
