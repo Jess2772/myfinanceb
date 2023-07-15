@@ -34,10 +34,10 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
-    'https://myfinancejb-2225ee8966e8.herokuapp.com/',
-    'https://incredible-caramel-35da02.netlify.app/',
-    'http://myfinancejb-2225ee8966e8.herokuapp.com/',
-    'http://incredible-caramel-35da02.netlify.app/'
+    'https://myfinancejb-2225ee8966e8.herokuapp.com',
+    'https://incredible-caramel-35da02.netlify.app',
+    'http://myfinancejb-2225ee8966e8.herokuapp.com',
+    'http://incredible-caramel-35da02.netlify.app'
 ]
 
 
