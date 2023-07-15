@@ -28,7 +28,8 @@ class UserRegister(APIView):
 				response = Response(serializer.data, status=status.HTTP_201_CREATED)
 				response['Access-Control-Allow-Origin'] = "*"
 				response['Access-Control-Allow-Methods'] = "GET,HEAD,OPTIONS,POST,PUT"
-				response['Access-Control-Allow-Headers'] = "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+				response['Access-Control-Allow-Headers'] = "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Access-Control-Request-Method, Access-Control-Request-Headers"
+				response['Content-Type'] = "application/json"
 				response['Access-Control-Allow-Credentials'] = True
 				return response
 		return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -46,10 +47,10 @@ class UserLogin(APIView):
 		if serializer.is_valid(raise_exception=True):
 			user = serializer.check_user(data)
 			login(request, user)
-			response = Response(serializer.data, status=status.HTTP_200_OK)
 			response['Access-Control-Allow-Origin'] = "*"
 			response['Access-Control-Allow-Methods'] = "GET,HEAD,OPTIONS,POST,PUT"
-			response['Access-Control-Allow-Headers'] = "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+			response['Access-Control-Allow-Headers'] = "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Access-Control-Request-Method, Access-Control-Request-Headers"
+			response['Content-Type'] = "application/json"
 			response['Access-Control-Allow-Credentials'] = True
 			return response
 
@@ -71,6 +72,7 @@ class UserView(APIView):
 		response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
 		response['Access-Control-Allow-Origin'] = "*"
 		response['Access-Control-Allow-Methods'] = "GET,HEAD,OPTIONS,POST,PUT"
-		response['Access-Control-Allow-Headers'] = "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+		response['Access-Control-Allow-Headers'] = "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Access-Control-Request-Method, Access-Control-Request-Headers"
+		response['Content-Type'] = "application/json"
 		response['Access-Control-Allow-Credentials'] = True
 		return response
