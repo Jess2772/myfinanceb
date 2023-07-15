@@ -29,6 +29,7 @@ class UserRegister(APIView):
 				response['Access-Control-Allow-Origin'] = 'https://incredible-caramel-35da02.netlify.app/'
 				response['Access-Control-Allow-Methods'] = 'POST, GET, PUT'
 				response['Access-Control-Allow-Headers'] = 'Content-Type'
+				response['Access-Control-Allow-Credentials'] = True
 				return response
 		return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -49,6 +50,7 @@ class UserLogin(APIView):
 			response['Access-Control-Allow-Origin'] = 'https://incredible-caramel-35da02.netlify.app/'
 			response['Access-Control-Allow-Methods'] = 'POST, GET, PUT'
 			response['Access-Control-Allow-Headers'] = 'Content-Type'
+			response['Access-Control-Allow-Credentials'] = True
 			return response
 
 
@@ -70,4 +72,5 @@ class UserView(APIView):
 		response['Access-Control-Allow-Origin'] = 'https://incredible-caramel-35da02.netlify.app/'
 		response['Access-Control-Allow-Methods'] = 'POST, GET, PUT'
 		response['Access-Control-Allow-Headers'] = 'Content-Type'
+		response['Access-Control-Allow-Credentials'] = True
 		return response
