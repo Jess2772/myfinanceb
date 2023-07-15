@@ -28,9 +28,7 @@ class UserRegister(APIView):
 				response = Response(serializer.data, status=status.HTTP_201_CREATED)
 				response['Access-Control-Allow-Origin'] = "*"
 				response['Access-Control-Allow-Methods'] = "GET,HEAD,OPTIONS,POST,PUT"
-				response['Access-Control-Allow-Headers'] = "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-				# response['Content-Type'] = "application/json"
-				response['Access-Control-Allow-Credentials'] = True
+				response['Access-Control-Allow-Headers'] = "Origin, X-Requested-With, Accept"
 				return response
 		return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -50,9 +48,7 @@ class UserLogin(APIView):
 			response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
 			response['Access-Control-Allow-Origin'] = "*"
 			response['Access-Control-Allow-Methods'] = "GET,HEAD,OPTIONS,POST,PUT"
-			response['Access-Control-Allow-Headers'] = "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-			# response['Content-Type'] = "application/json"
-			response['Access-Control-Allow-Credentials'] = True
+			response['Access-Control-Allow-Headers'] = "Origin, X-Requested-With, Accept"
 			return response
 
 
@@ -73,7 +69,6 @@ class UserView(APIView):
 		response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
 		response['Access-Control-Allow-Origin'] = "*"
 		response['Access-Control-Allow-Methods'] = "GET,HEAD,OPTIONS,POST,PUT"
-		response['Access-Control-Allow-Headers'] = "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+		response['Access-Control-Allow-Headers'] = "Origin, X-Requested-With, Accept"
 		# response['Content-Type'] = "application/json"
-		response['Access-Control-Allow-Credentials'] = True
 		return response
