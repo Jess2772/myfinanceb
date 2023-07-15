@@ -26,7 +26,7 @@ class UserRegister(APIView):
 			user = serializer.create(clean_data)
 			if user:
 				response = Response(serializer.data, status=status.HTTP_201_CREATED)
-				response['Access-Control-Allow-Origin'] = "*"
+				response['Access-Control-Allow-Origin'] = "https://incredible-caramel-35da02.netlify.app"
 				return response
 		return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -44,7 +44,7 @@ class UserLogin(APIView):
 			user = serializer.check_user(data)
 			login(request, user)
 			response = Response(serializer.data, status=status.HTTP_200_OK)
-			response['Access-Control-Allow-Origin'] = "*"
+			response['Access-Control-Allow-Origin'] = "https://incredible-caramel-35da02.netlify.app"
 			return response
 
 
@@ -63,5 +63,5 @@ class UserView(APIView):
 	def get(self, request):
 		serializer = UserSerializer(request.user)
 		response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
-		response['Access-Control-Allow-Origin'] = "*"
+		response['Access-Control-Allow-Origin'] = "https://incredible-caramel-35da02.netlify.app"
 		return response
