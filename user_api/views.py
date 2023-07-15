@@ -2,7 +2,7 @@ from django.shortcuts import render
 from . models import *
 from rest_framework.response import Response
 from . serializer import *
-
+import sys
 # Create your views here.
 def home(request):
     return render(request, 'build/index.html')
@@ -24,6 +24,7 @@ class UserRegister(APIView):
 		serializer = UserRegisterSerializer(data=clean_data)
 		if serializer.is_valid(raise_exception=True):
 			print("valid credentials, registering")
+			sys.stdout.flush()
 			user = serializer.create(clean_data)
 			if user:
 				response = Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -46,6 +47,7 @@ class UserLogin(APIView):
 		if serializer.is_valid(raise_exception=True):
 			user = serializer.check_user(data)
 			print("Sending login request")
+			sys.stdout.flush()
 			login(request, user)
 			response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
 			response['Access-Control-Allow-Origin'] = "*"
