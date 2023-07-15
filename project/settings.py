@@ -39,7 +39,8 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 
-CORS_ALLOW_HEADERS = ['*']
+CORS_ALLOW_HEADERS = ['content-disposition', 'accept-encoding',
+                      'content-type', 'accept', 'origin', 'authorization']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://incredible-caramel-35da02.netlify.app',
