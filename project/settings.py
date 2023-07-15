@@ -45,8 +45,8 @@ CORS_ALLOW_HEADERS = ['content-disposition', 'accept-encoding',
                       'content-type', 'accept', 'origin', 'authorization', 'Access-Control-Allow-Origin']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://incredible-caramel-35da02.netlify.app',
-    'http://incredible-caramel-35da02.netlify.app',
+    'https://incredible-caramel-35da02.netlify.app/',
+    'http://incredible-caramel-35da02.netlify.app/',
 ]
 
 CORS_ALLOW_METHODS = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']
