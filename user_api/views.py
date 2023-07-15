@@ -28,7 +28,7 @@ class UserRegister(APIView):
 				response = Response(serializer.data, status=status.HTTP_201_CREATED)
 				response['Access-Control-Allow-Origin'] = 'https://incredible-caramel-35da02.netlify.app/'
 				response['Access-Control-Allow-Methods'] = 'POST, GET, PUT'
-				response['Access-Control-Allow-Headers'] = 'Content-Type'
+				response['Access-Control-Allow-Headers'] = 'X-Requested-With, Content-Type'
 				response['Access-Control-Allow-Credentials'] = True
 				return response
 		return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -49,7 +49,7 @@ class UserLogin(APIView):
 			response = Response(serializer.data, status=status.HTTP_200_OK)
 			response['Access-Control-Allow-Origin'] = 'https://incredible-caramel-35da02.netlify.app/'
 			response['Access-Control-Allow-Methods'] = 'POST, GET, PUT'
-			response['Access-Control-Allow-Headers'] = 'Content-Type'
+			response['Access-Control-Allow-Headers'] = 'X-Requested-With, Content-Type'
 			response['Access-Control-Allow-Credentials'] = True
 			return response
 
@@ -71,6 +71,6 @@ class UserView(APIView):
 		response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
 		response['Access-Control-Allow-Origin'] = 'https://incredible-caramel-35da02.netlify.app/'
 		response['Access-Control-Allow-Methods'] = 'POST, GET, PUT'
-		response['Access-Control-Allow-Headers'] = 'Content-Type'
+		response['Access-Control-Allow-Headers'] = 'X-Requested-With, Content-Type'
 		response['Access-Control-Allow-Credentials'] = True
 		return response
