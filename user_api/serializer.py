@@ -2,6 +2,7 @@
 from rest_framework import serializers
 from .models import *
 from django.contrib.auth import get_user_model, authenticate
+from django.core.exceptions import ValidationError
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
@@ -50,6 +51,18 @@ class CategoryRegisterSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Categories
 		fields = '__all__'
-	def create(self, clean_data):
-		category_obj = Categories.objects.create(name=clean_data['name'], abbr=clean_data['abbr'])
+	
+	def validate(self, data):
+		name = data['name'].strip()
+		abbr = data['abbr'].strip()
+		##
+		if not name or Categories.objects.filter(name=name).exists():
+			raise ValidationError('Category already exists.')
+		##
+		if not abbr or len(abbr) != 2:
+			raise ValidationError('Invalid abbreviation.')
+		return data
+	
+	def create(self, data):
+		category_obj = Categories.objects.create(name=data['name'], abbr=data['abbr'])
 		return category_obj

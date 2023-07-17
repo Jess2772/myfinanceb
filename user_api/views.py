@@ -65,10 +65,9 @@ class UserView(APIView):
 class CategoryRegister(APIView):
 	permission_classes = (permissions.AllowAny,)
 	def post(self, request):
-		clean_data = validate_category(request.data)
-		serializer = CategoryRegisterSerializer(data=clean_data)
+		serializer = CategoryRegisterSerializer(data=request.data)
 		if serializer.is_valid(raise_exception=True):
-			category = serializer.create(clean_data)
+			category = serializer.create(request.data)
 			if category:
 				response = Response(serializer.data, status=status.HTTP_201_CREATED)
 				return response
