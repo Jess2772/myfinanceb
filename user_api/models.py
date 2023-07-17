@@ -45,7 +45,7 @@ class Categories(models.Model): # Mapping table
 class Merchant(models.Model):
     merchant_id = models.AutoField(primary_key=True)
     merchant_name = models.CharField(max_length=50, null=False, blank=False)
-    category =  models.ForeignKey(Categories, on_delete=models.CASCADE, null=False, blank=False)
+    category =  models.ForeignKey(Categories, on_delete=models.CASCADE, null=True, blank=False)
     class Meta:
         managed = True
         db_table = "merchant_xref"
@@ -53,8 +53,8 @@ class Merchant(models.Model):
 class Transaction(models.Model):
     transaction_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(AppUser, on_delete=models.CASCADE, null=True, blank=True) # Remove entry when parent row is deleted (ie user)
-    category = models.ForeignKey(Categories, on_delete=models.CASCADE, null=False, blank=False)
-    merchant = models.ForeignKey(Merchant, on_delete=models.CASCADE, null=False, blank=False)
+    category = models.ForeignKey(Categories, on_delete=models.CASCADE, null=True, blank=True)
+    merchant = models.ForeignKey(Merchant, on_delete=models.CASCADE, null=True, blank=True)
     amount = models.DecimalField(decimal_places=2, max_digits=10, null=False, blank=False)
     transaction_date = models.DateField(null=False, blank=False)
     pymt_method = models.CharField(max_length=2, blank=True)

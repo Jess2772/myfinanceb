@@ -86,9 +86,6 @@ class BudgetRegisterSerializer(serializers.ModelSerializer):
 		entertainment_lmt = data['entertainment_lmt'] if 'entertainment_lmt' in data else None
 		clothing_lmt = data['clothing_lmt'] if 'clothing_lmt' in data else None
 		miscellaneous_lmt = data['miscellaneous_lmt'] if 'miscellaneous_lmt' in data else None
-		# status= data['status'].strip()
-		# eff_from= data['eff_from'].strip()
-		# eff_to= data['eff_to'].strip()
 
 		if not frequency:
 			raise ValidationError('Enter a frequency')
@@ -148,3 +145,55 @@ class BudgetRegisterSerializer(serializers.ModelSerializer):
 			eff_to = datetime(9999, 12, 31, tzinfo=timezone.utc)
 		)
 		return budget_obj
+
+
+class TransactionRegisterSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Transaction
+		fields = ['amount', 'transaction_date', 'pymt_method']
+	
+	def validate(self, data):
+		amount = data['amount']
+		transaction_date = data['transaction_date']
+		pymt_method = data['pymt_method'].strip()
+
+		if not amount or amount <= 0:
+			raise ValidationError("Invalid transaction amount")
+
+		if not transaction_date:
+			raise ValidationError("Transaction date not valid")
+		
+		if not pymt_method or len(pymt_method) != 2:
+			raise ValidationError("Invalid payment method")
+	
+		return data
+
+	def create(self, data, user_id, category_id, merchant_id):
+		transaction_obj = Transaction.objects.create(
+			user_id = user_id,
+			category_id = category_id,
+			merchant_id = merchant_id,
+			amount = data['amount'],
+			transaction_date = data['transaction_date'],
+			pymt_method = data['pymt_method'] if 'pymt_method' in data else None
+		)
+		return transaction_obj
+	
+
+class MerchantRegisterSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Merchant
+		fields = ['merchant_name']
+	
+	def validate(self, data):
+		merchant_name = data['merchant_name'].strip()
+		if not merchant_name:
+			raise ValidationError("Not a valid merchant name")
+		return data
+		
+	def create(self, data, category_id):
+		merchant_obj = Merchant.objects.create(
+			category_id = category_id,
+			merchant_name = data['merchant_name']
+		)
+		return merchant_obj

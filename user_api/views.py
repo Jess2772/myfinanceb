@@ -74,7 +74,6 @@ class CategoryRegister(APIView):
 		return Response(status=status.HTTP_400_BAD_REQUEST)
 	
 
-# TODO: need to get the user key in order to save the budget (you took a picture)
 class BudgetRegister(APIView):
 	permission_classes = (permissions.AllowAny,)
 	authentication_classes = (SessionAuthentication,)
@@ -86,6 +85,37 @@ class BudgetRegister(APIView):
 			budget = serializer.create(request.data, user_id)
 			# TODO: need to ensure that mandatory fields are populated, because cannot reinforce in models.py
 			if budget:
+				response = Response(serializer.data, status=status.HTTP_201_CREATED)
+				return response
+		return Response(status=status.HTTP_400_BAD_REQUEST)
+	
+
+class TransactionRegister(APIView):
+	permission_classes = (permissions.AllowAny,)
+	authentication_classes = (SessionAuthentication,)
+	def post(self, request):
+		user_id = _get_user_session_key(request)
+		merchant = Merchant.objects.get(merchant_name = request.data['merchant'])
+		category_id = merchant.category_id
+		merchant_id = merchant.merchant_id
+		serializer = TransactionRegisterSerializer(data=request.data)
+		if serializer.is_valid(raise_exception=True):
+			transaction = serializer.create(request.data, user_id, category_id, merchant_id)
+			# TODO: need to ensure that mandatory fields are populated, because cannot reinforce in models.py
+			if transaction:
+				response = Response(serializer.data, status=status.HTTP_201_CREATED)
+				return response
+		return Response(status=status.HTTP_400_BAD_REQUEST)
+	
+class MerchantRegister(APIView):
+	permission_classes = (permissions.AllowAny,)
+	def post(self, request):
+		category_id = Categories.objects.get(name = request.data['category']).category_id
+		serializer = MerchantRegisterSerializer(data=request.data)
+		if serializer.is_valid(raise_exception=True):
+			merchant = serializer.create(request.data, category_id)
+			# TODO: need to ensure that mandatory fields are populated, because cannot reinforce in models.py
+			if merchant:
 				response = Response(serializer.data, status=status.HTTP_201_CREATED)
 				return response
 		return Response(status=status.HTTP_400_BAD_REQUEST)
