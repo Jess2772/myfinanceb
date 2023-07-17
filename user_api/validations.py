@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
+from .models import * 
 UserModel = get_user_model()
 
 def custom_validation(data):
@@ -35,3 +36,14 @@ def validate_password(data):
     if not password:
         raise ValidationError('a password is needed')
     return True
+
+def validate_category(data):
+    name = data['name'].strip()
+    abbr = data['abbr'].strip()
+    ##
+    if not name or Categories.objects.filter(name=name).exists():
+        raise ValidationError('Category already exists.')
+    ##
+    if not abbr or len(abbr) != 2:
+        raise ValidationError('choose another password, min 8 characters')
+    return data

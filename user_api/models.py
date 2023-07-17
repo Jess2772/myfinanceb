@@ -34,6 +34,7 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
 		return self.username
 	    
 class Categories(models.Model): # Mapping table
+    category_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=20, null=False, blank=False)
     abbr = models.CharField(max_length=2, null=False, blank=False)
     class Meta:
@@ -42,16 +43,18 @@ class Categories(models.Model): # Mapping table
 
 
 class Merchant(models.Model):
+    merchant_id = models.AutoField(primary_key=True)
     merchant_name = models.CharField(max_length=50, null=False, blank=False)
-    category_id =  models.ForeignKey(Categories, on_delete=models.CASCADE, null=False, blank=False)
+    category =  models.ForeignKey(Categories, on_delete=models.CASCADE, null=False, blank=False)
     class Meta:
         managed = True
         db_table = "merchant_xref"
 
 class Transaction(models.Model):
-    user_id = models.ForeignKey(AppUser, on_delete=models.CASCADE, null=False, blank=False) # Remove entry when parent row is deleted (ie user)
-    category_id = models.ForeignKey(Categories, on_delete=models.CASCADE, null=False, blank=False)
-    merchant_id = models.ForeignKey(Merchant, on_delete=models.CASCADE, null=False, blank=False)
+    transaction_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE, null=False, blank=False) # Remove entry when parent row is deleted (ie user)
+    category = models.ForeignKey(Categories, on_delete=models.CASCADE, null=False, blank=False)
+    merchant = models.ForeignKey(Merchant, on_delete=models.CASCADE, null=False, blank=False)
     amount = models.DecimalField(decimal_places=2, max_digits=10, null=False, blank=False)
     transaction_date = models.DateField(null=False, blank=False)
     pymt_method = models.CharField(max_length=2, blank=True)
@@ -61,7 +64,8 @@ class Transaction(models.Model):
 
 
 class Budget(models.Model):
-    user_id = models.ForeignKey(AppUser, on_delete=models.CASCADE, null=False, blank=False) # Remove entry when parent row is deleted (ie user)
+    budget_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE, null=False, blank=False) # Remove entry when parent row is deleted (ie user)
     frequency = models.CharField(max_length=10, null=False, blank=False)
     budget = models.DecimalField(decimal_places=2, max_digits=10, null=False, blank=False)
     housing_lmt = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
@@ -83,7 +87,8 @@ class Budget(models.Model):
 
 
 class Income(models.Model):
-    user_id = models.ForeignKey(AppUser, on_delete=models.CASCADE, null=False, blank=False)
+    income_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE, null=False, blank=False)
     amount = models.DecimalField(decimal_places=2, max_digits=10, null=False, blank=False)
     company = models.CharField(max_length=40, null=False, blank=False)
     income_dt = models.DateField(null=False, blank=False)

@@ -44,3 +44,12 @@ class UserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = UserModel
 		fields = ('email', 'username')
+
+
+class CategoryRegisterSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Categories
+		fields = '__all__'
+	def create(self, clean_data):
+		category_obj = Categories.objects.create(name=clean_data['name'], abbr=clean_data['abbr'])
+		return category_obj

@@ -3,10 +3,6 @@ from . models import *
 from rest_framework.response import Response
 from . serializer import *
 import sys
-# Create your views here.
-def home(request):
-    return render(request, 'build/index.html')
-
 
 from django.contrib.auth import get_user_model, login, logout
 from rest_framework.authentication import SessionAuthentication
@@ -14,7 +10,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializer import UserRegisterSerializer, UserLoginSerializer, UserSerializer
 from rest_framework import permissions, status
-from .validations import custom_validation, validate_email, validate_password
+from .validations import *
 
 
 class UserRegister(APIView):
@@ -35,7 +31,6 @@ class UserRegister(APIView):
 class UserLogin(APIView):
 	permission_classes = (permissions.AllowAny,)
 	authentication_classes = (SessionAuthentication,)
-	##
 	def post(self, request):
 		data = request.data
 		assert validate_email(data)
@@ -65,5 +60,16 @@ class UserView(APIView):
 	def get(self, request):
 		serializer = UserSerializer(request.user)
 		response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
-		# response['Content-Type'] = "application/json"
 		return response
+	
+class CategoryRegister(APIView):
+	permission_classes = (permissions.AllowAny,)
+	def post(self, request):
+		clean_data = validate_category(request.data)
+		serializer = CategoryRegisterSerializer(data=clean_data)
+		if serializer.is_valid(raise_exception=True):
+			category = serializer.create(clean_data)
+			if category:
+				response = Response(serializer.data, status=status.HTTP_201_CREATED)
+				return response
+		return Response(status=status.HTTP_400_BAD_REQUEST)
