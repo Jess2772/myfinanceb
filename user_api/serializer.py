@@ -3,21 +3,12 @@ from rest_framework import serializers
 from .models import *
 from django.contrib.auth import get_user_model, authenticate
 from django.core.exceptions import ValidationError
+from datetime import datetime
+from django.utils import timezone
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = '__all__'
-
-class BudgetSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Budget
-        fields = '__all__'
-
-class CategoriesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Categories
-        fields = '__all__'
-
 
 UserModel = get_user_model()
 
@@ -47,6 +38,11 @@ class UserSerializer(serializers.ModelSerializer):
 		fields = ('email', 'username')
 
 
+class CategoriesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Categories
+        fields = '__all__'
+
 class CategoryRegisterSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Categories
@@ -55,10 +51,10 @@ class CategoryRegisterSerializer(serializers.ModelSerializer):
 	def validate(self, data):
 		name = data['name'].strip()
 		abbr = data['abbr'].strip()
-		##
+
 		if not name or Categories.objects.filter(name=name).exists():
 			raise ValidationError('Category already exists.')
-		##
+		
 		if not abbr or len(abbr) != 2:
 			raise ValidationError('Invalid abbreviation.')
 		return data
@@ -66,3 +62,89 @@ class CategoryRegisterSerializer(serializers.ModelSerializer):
 	def create(self, data):
 		category_obj = Categories.objects.create(name=data['name'], abbr=data['abbr'])
 		return category_obj
+	
+class BudgetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Budget
+        fields = '__all__'
+	
+class BudgetRegisterSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Budget
+		fields = '__all__'
+
+	def validate(self, data):
+		frequency = data['frequency'].strip()
+		budget = data['budget']
+		housing_lmt = data['housing_lmt'] if 'housing_lmt' in data else None
+		utility_lmt = data['utility_lmt'] if 'utility_lmt' in data else None
+		transportation_lmt = data['transportation_lmt'] if 'transportation_lmt' in data else None
+		grocery_lmt = data['grocery_lmt'] if 'grocery_lmt' in data else None
+		healthcare_lmt = data['healthcare_lmt'] if 'healthcare_lmt' in data else None
+		dining_lmt = data['dining_lmt'] if 'dining_lmt' in data else None
+		personal_care_lmt = data['personal_care_lmt'] if 'personal_care_lmt' in data else None 
+		entertainment_lmt = data['entertainment_lmt'] if 'entertainment_lmt' in data else None
+		clothing_lmt = data['clothing_lmt'] if 'clothing_lmt' in data else None
+		miscellaneous_lmt = data['miscellaneous_lmt'] if 'miscellaneous_lmt' in data else None
+		# status= data['status'].strip()
+		# eff_from= data['eff_from'].strip()
+		# eff_to= data['eff_to'].strip()
+
+		if not frequency:
+			raise ValidationError('Enter a frequency')
+		
+		if not budget or budget <= 0:
+			raise ValidationError('Invalid budget amount')
+		
+		if housing_lmt and housing_lmt < 0:
+			raise ValidationError('Invaild housing limit amount')
+
+		if utility_lmt and utility_lmt < 0:
+			raise ValidationError('Invalid utility limit amount')
+
+		if transportation_lmt and transportation_lmt < 0:
+			raise ValidationError('Invalid transportation limit amount')
+		
+		if grocery_lmt and grocery_lmt < 0:
+			raise ValidationError('Invalid grocery limit amount')
+		
+		if healthcare_lmt and healthcare_lmt < 0:
+			raise ValidationError('Invalid healthcare limit amount')
+
+		if dining_lmt and dining_lmt < 0:
+			raise ValidationError('Invalid dining limit amount')
+
+		if personal_care_lmt and personal_care_lmt < 0:
+			raise ValidationError('Invalid personal care limit amount')
+		
+		if entertainment_lmt and entertainment_lmt < 0:
+			raise ValidationError('Invalid entertainment limit amount')
+
+		if clothing_lmt and clothing_lmt < 0:
+			raise ValidationError('Invalid clothing limit amount')
+
+		if miscellaneous_lmt and miscellaneous_lmt < 0:
+			raise ValidationError('Invalid miscellaneous limit amount')
+		
+		return data
+	
+	def create(self, data, user_id):
+		budget_obj = Budget.objects.create(
+			user_id = user_id,
+			frequency = data['frequency'],
+			budget = data['budget'],
+			housing_lmt = data['housing_lmt'] if 'housing_lmt' in data else None,
+			utility_lmt = data['utility_lmt'] if 'utility_lmt' in data else None,
+			transportation_lmt = data['transportation_lmt'] if 'transportation_lmt' in data else None,
+			grocery_lmt = data['grocery_lmt'] if 'grocery_lmt' in data else None,
+			healthcare_lmt = data['healthcare_lmt'] if 'healthcare_lmt' in data else None,
+			dining_lmt = data['dining_lmt'] if 'dining_lmt' in data else None,
+			personal_care_lmt = data['personal_care_lmt'] if 'personal_care_lmt' in data else None,
+			entertainment_lmt = data['entertainment_lmt'] if 'entertainment_lmt' in data else None,
+			clothing_lmt = data['clothing_lmt'] if 'clothing_lmt' in data else None,
+			miscellaneous_lmt = data['miscellaneous_lmt'] if 'miscellaneous_lmt' in data else None,
+			is_active = "Y",
+			eff_from = datetime.now(tz=timezone.utc),
+			eff_to = datetime(9999, 12, 31, tzinfo=timezone.utc)
+		)
+		return budget_obj

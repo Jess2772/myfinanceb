@@ -52,7 +52,7 @@ class Merchant(models.Model):
 
 class Transaction(models.Model):
     transaction_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(AppUser, on_delete=models.CASCADE, null=False, blank=False) # Remove entry when parent row is deleted (ie user)
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE, null=True, blank=True) # Remove entry when parent row is deleted (ie user)
     category = models.ForeignKey(Categories, on_delete=models.CASCADE, null=False, blank=False)
     merchant = models.ForeignKey(Merchant, on_delete=models.CASCADE, null=False, blank=False)
     amount = models.DecimalField(decimal_places=2, max_digits=10, null=False, blank=False)
@@ -65,7 +65,7 @@ class Transaction(models.Model):
 
 class Budget(models.Model):
     budget_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(AppUser, on_delete=models.CASCADE, null=False, blank=False) # Remove entry when parent row is deleted (ie user)
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE, null=True, blank=True) # Remove entry when parent row is deleted (ie user)
     frequency = models.CharField(max_length=10, null=False, blank=False)
     budget = models.DecimalField(decimal_places=2, max_digits=10, null=False, blank=False)
     housing_lmt = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
@@ -78,9 +78,9 @@ class Budget(models.Model):
     entertainment_lmt = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
     clothing_lmt = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
     miscellaneous_lmt = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True) # any expenses that come up randomly
-    status = models.CharField(max_length=2, null=False, blank=False)
-    eff_from = models.DateTimeField(null=False, blank=False)
-    eff_to = models.DateTimeField(null=False, blank=False)
+    is_active = models.CharField(max_length=1, null=True, blank=True) # Y or N
+    eff_from = models.DateTimeField(null=True, blank=True)
+    eff_to = models.DateTimeField(null=True, blank=True)
     class Meta:
         managed = True
         db_table = "budget"
@@ -88,7 +88,7 @@ class Budget(models.Model):
 
 class Income(models.Model):
     income_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(AppUser, on_delete=models.CASCADE, null=False, blank=False)
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE, null=True, blank=True)
     amount = models.DecimalField(decimal_places=2, max_digits=10, null=False, blank=False)
     company = models.CharField(max_length=40, null=False, blank=False)
     income_dt = models.DateField(null=False, blank=False)
