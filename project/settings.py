@@ -35,9 +35,9 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
     'https://myfinancejb-2225ee8966e8.herokuapp.com',
-    'https://incredible-caramel-35da02.netlify.app',
+    'https://my-finance-b.netlify.app',
     'http://myfinancejb-2225ee8966e8.herokuapp.com',
-    'http://incredible-caramel-35da02.netlify.app'
+    'http://my-finance-b.netlify.app'
 ]
 
 #CSRF_COOKIE_NAME = "XCSRF-TOKEN"
@@ -48,7 +48,7 @@ CORS_ALLOW_HEADERS = list(default_headers) + ['Set-Cookie', 'X-CSRFTOKEN']
 #     'https://incredible-caramel-35da02.netlify.app/',
 #     'http://incredible-caramel-35da02.netlify.app/',
 # ]
-CSRF_TRUSTED_ORIGINS = ['https://*incredible-caramel-35da02.netlify.app/', 'https://*incredible-caramel-35da02.netlify.app', 'http://*incredible-caramel-35da02.netlify.app','http://*.127.0.0.1:3000']
+CSRF_TRUSTED_ORIGINS = ['https://*my-finance-b.netlify.app/', 'https://*my-finance-b.netlify.app', 'http://*my-finance-b.netlify.app','http://*.127.0.0.1:3000']
 
 CORS_ALLOW_METHODS = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']
 

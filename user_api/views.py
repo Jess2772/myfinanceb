@@ -46,9 +46,7 @@ class UserLogin(APIView):
 			print("Sending login request")
 			sys.stdout.flush()
 			login(request, user)
-			csrft = request.headers['Cookie'].split(";")[0]
 			response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
-			response['Set-Cookie'] = "csrftoken=" + csrft + '; expires=Thu, 18 Jul 2024 03:53:40 GMT; Max-Age=31449600; Path=/; SameSite=None; Secure'
 			return response
 		
 
@@ -74,9 +72,7 @@ class UserView(APIView):
 	@method_decorator(ensure_csrf_cookie)
 	def get(self, request):
 		serializer = UserSerializer(request.user)
-		csrft = request.headers['Cookie'].split(";")[0]
 		response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
-		response['Set-Cookie'] = "csrftoken=" + csrft + '; expires=Thu, 18 Jul 2024 03:53:40 GMT; Max-Age=31449600; Path=/; SameSite=None; Secure'
 		return response
 
 
