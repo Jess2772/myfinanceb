@@ -57,11 +57,11 @@ CORS_ALLOW_METHODS = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']
 #     'https://incredible-caramel-35da02.netlify.app'
 # )
 # Application definition
-# CSRF_COOKIE_SECURE = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SAMESITE = 'None'
-# SESSION_COOKIE_SAMESITE = 'None'
-
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = None
+SESSION_COOKIE_SAMESITE = None
+CSRF_COOKIE_HTTPONLY = False
 INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.admin',
