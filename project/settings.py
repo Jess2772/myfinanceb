@@ -27,8 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
-
-ALLOWED_HOSTS = ['myfinancejb-2225ee8966e8.herokuapp.com']
+ALLOWED_HOSTS = ['myfinancejb-2225ee8966e8.herokuapp.com', 'localhost', '127.0.0.1']
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
@@ -40,9 +39,9 @@ CORS_ALLOWED_ORIGINS = [
     'http://incredible-caramel-35da02.netlify.app'
 ]
 
-
+CSRF_COOKIE_NAME = "XCSRF-TOKEN"
 CORS_ALLOW_HEADERS = ['content-disposition', 'accept-encoding',
-                      'content-type', 'accept', 'origin', 'authorization', 'Access-Control-Allow-Origin']
+                      'content-type', 'accept', 'origin', 'authorization', 'Access-Control-Allow-Origin', 'X-CSRFToken']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://incredible-caramel-35da02.netlify.app/',

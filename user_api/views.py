@@ -12,6 +12,7 @@ from .serializer import UserRegisterSerializer, UserLoginSerializer, UserSeriali
 from rest_framework import permissions, status
 from .validations import *
 from django.utils import timezone
+from django.middleware.csrf import get_token
 
 class UserRegister(APIView):
 	permission_classes = (permissions.AllowAny,)
@@ -52,6 +53,13 @@ class UserLogout(APIView):
 		logout(request)
 		return Response(status=status.HTTP_200_OK)
 
+class UserTest(APIView):
+	permission_classes = (permissions.AllowAny,)
+	authentication_classes = ()
+	def get(self, request):
+		user = UserModel.objects.get(user_id=_get_user_session_key(request))
+		serializer = UserSerializer(user)
+		return Response({'user': serializer.data}, status=status.HTTP_200_OK)
 
 class UserView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)

@@ -10,4 +10,5 @@ urlpatterns = [
     path('budget', views.BudgetRegister.as_view(), name='budget'),
     path('transaction', views.TransactionRegister.as_view(), name='transaction'),
     path('merchant', views.MerchantRegister.as_view(), name='merchant'),
+    path('userTest', views.UserTest.as_view(), name='userTest'),
 ]
