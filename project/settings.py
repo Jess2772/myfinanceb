@@ -48,7 +48,7 @@ CORS_ALLOW_HEADERS = list(default_headers) + ['Set-Cookie']
 #     'https://incredible-caramel-35da02.netlify.app/',
 #     'http://incredible-caramel-35da02.netlify.app/',
 # ]
-CSRF_TRUSTED_ORIGINS = ['https://*incredible-caramel-35da02.netlify.app/','http://*.127.0.0.1:3000']
+CSRF_TRUSTED_ORIGINS = ['https://*incredible-caramel-35da02.netlify.app/', 'https://*incredible-caramel-35da02.netlify.app', 'http://*incredible-caramel-35da02.netlify.app','http://*.127.0.0.1:3000']
 
 CORS_ALLOW_METHODS = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']
 
