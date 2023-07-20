@@ -15,6 +15,7 @@ import os
 import django_heroku
 import dj_database_url
 from decouple import config
+from corsheaders.defaults import default_headers
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -40,9 +41,9 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 #CSRF_COOKIE_NAME = "XCSRF-TOKEN"
-CORS_ALLOW_HEADERS = ['content-disposition', 'accept-encoding',
-                      'content-type', 'accept', 'origin', 'authorization', 'Access-Control-Allow-Origin', 'X-CSRFToken', 'csrftoken']
-
+# CORS_ALLOW_HEADERS = ['content-disposition', 'accept-encoding',
+#                       'content-type', 'accept', 'origin', 'authorization', 'Access-Control-Allow-Origin', 'X-CSRFToken', 'csrftoken']
+CORS_ALLOW_HEADERS = list(default_headers) + ['Set-Cookie']
 # CSRF_TRUSTED_ORIGINS = [
 #     'https://incredible-caramel-35da02.netlify.app/',
 #     'http://incredible-caramel-35da02.netlify.app/',
@@ -58,13 +59,14 @@ CORS_ALLOW_METHODS = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']
 #     'https://incredible-caramel-35da02.netlify.app'
 # )
 # Application definition
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
 # XCSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = None
 SESSION_COOKIE_SAMESITE = None
 # XCSRF_COOKIE_SAMESITE = None
-CSRF_COOKIE_HTTPONLY = False
+#CSRF_COOKIE_HTTPONLY = False
+CSRF_USE_SESSIONS = False
 # SESSION_COOKIE_SAMESITE_FORCE_ALL = True
 INSTALLED_APPS = [
     'corsheaders',
