@@ -16,10 +16,9 @@ from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 
-
+@ensure_csrf_cookie
 class UserRegister(APIView):
 	permission_classes = (permissions.AllowAny,)
-	@method_decorator(ensure_csrf_cookie)
 	def post(self, request):
 		clean_data = custom_validation(request.data)
 		serializer = UserRegisterSerializer(data=clean_data)
@@ -32,11 +31,10 @@ class UserRegister(APIView):
 				return response
 		return Response(status=status.HTTP_400_BAD_REQUEST)
 
-
+@ensure_csrf_cookie
 class UserLogin(APIView):
 	permission_classes = (permissions.AllowAny,)
 	authentication_classes = (SessionAuthentication,)
-	@method_decorator(ensure_csrf_cookie)
 	def post(self, request):
 		data = request.data
 		assert validate_email(data)
@@ -49,37 +47,35 @@ class UserLogin(APIView):
 			login(request, user)
 			response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
 			return response
-
+@ensure_csrf_cookie
 class UserLogout(APIView):
 	permission_classes = (permissions.AllowAny,)
 	authentication_classes = ()
-	@method_decorator(ensure_csrf_cookie)
 	def post(self, request):
 		logout(request)
 		return Response(status=status.HTTP_200_OK)
 	
+@ensure_csrf_cookie
 class UserTest(APIView):
 	permission_classes = (permissions.AllowAny,)
 	authentication_classes = ()
-	@method_decorator(ensure_csrf_cookie)
 	def get(self, request):
 		user = UserModel.objects.get(user_id=_get_user_session_key(request))
 		serializer = UserSerializer(user)
 		return Response({'user': serializer.data}, status=status.HTTP_200_OK)
 
+@ensure_csrf_cookie
 class UserView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 	authentication_classes = (SessionAuthentication,)
-	@method_decorator(ensure_csrf_cookie)
 	def get(self, request):
 		serializer = UserSerializer(request.user)
 		response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
 		return response
 
-
+@ensure_csrf_cookie
 class CategoryRegister(APIView):
 	permission_classes = (permissions.AllowAny,)
-	@method_decorator(ensure_csrf_cookie)
 	def post(self, request):
 		serializer = CategoryRegisterSerializer(data=request.data)
 		if serializer.is_valid(raise_exception=True):
@@ -89,11 +85,10 @@ class CategoryRegister(APIView):
 				return response
 		return Response(status=status.HTTP_400_BAD_REQUEST)
 	
-
+@ensure_csrf_cookie
 class BudgetRegister(APIView):
 	permission_classes = (permissions.AllowAny,)
 	authentication_classes = (SessionAuthentication,)
-	@method_decorator(ensure_csrf_cookie)
 	def post(self, request):
 		user_id = _get_user_session_key(request)
 		serializer = BudgetRegisterSerializer(data=request.data)
@@ -106,11 +101,11 @@ class BudgetRegister(APIView):
 				return response
 		return Response(status=status.HTTP_400_BAD_REQUEST)
 	
-
+@ensure_csrf_cookie
 class TransactionRegister(APIView):
 	permission_classes = (permissions.AllowAny,)
 	authentication_classes = (SessionAuthentication,)
-	@method_decorator(ensure_csrf_cookie)
+
 	def post(self, request):
 		user_id = _get_user_session_key(request)
 		merchant = Merchant.objects.get(merchant_name = request.data['merchant'])
@@ -125,9 +120,9 @@ class TransactionRegister(APIView):
 				return response
 		return Response(status=status.HTTP_400_BAD_REQUEST)
 
+@ensure_csrf_cookie
 class MerchantRegister(APIView):
 	permission_classes = (permissions.AllowAny,)
-	@method_decorator(ensure_csrf_cookie)
 	def post(self, request):
 		category_id = Categories.objects.get(name = request.data['category']).category_id
 		serializer = MerchantRegisterSerializer(data=request.data)
