@@ -41,7 +41,7 @@ CORS_ALLOWED_ORIGINS = [
 
 CSRF_COOKIE_NAME = "XCSRF-TOKEN"
 CORS_ALLOW_HEADERS = ['content-disposition', 'accept-encoding',
-                      'content-type', 'accept', 'origin', 'authorization', 'Access-Control-Allow-Origin', 'X-CSRFToken']
+                      'content-type', 'accept', 'origin', 'authorization', 'Access-Control-Allow-Origin', 'X-CSRFToken', 'csrftoken']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://incredible-caramel-35da02.netlify.app/',
