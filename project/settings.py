@@ -59,11 +59,12 @@ CORS_ALLOW_METHODS = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']
 # Application definition
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
-XCSRF_TOKEN_COOKIE_SECURE = True
+XCSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = None
 SESSION_COOKIE_SAMESITE = None
-XCSRF_TOKEN_COOKIE_SAMESITE = None
+XCSRF_COOKIE_SAMESITE = None
 CSRF_COOKIE_HTTPONLY = False
+SESSION_COOKIE_SAMESITE_FORCE_ALL = True
 INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.admin',
@@ -82,6 +83,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django_cookies_samesite.middleware.CookiesSameSite',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
