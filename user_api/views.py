@@ -16,7 +16,7 @@ from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 
-@method_decorator(ensure_csrf_cookie, name='dispatch')
+
 class UserRegister(APIView):
 	permission_classes = (permissions.AllowAny,)
 	def post(self, request):
@@ -31,7 +31,7 @@ class UserRegister(APIView):
 				return response
 		return Response(status=status.HTTP_400_BAD_REQUEST)
 
-@method_decorator(ensure_csrf_cookie, name='dispatch')
+
 class UserLogin(APIView):
 	permission_classes = (permissions.AllowAny,)
 	authentication_classes = (SessionAuthentication,)
@@ -48,7 +48,7 @@ class UserLogin(APIView):
 			response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
 			return response
 		
-@method_decorator(ensure_csrf_cookie, name='dispatch')
+
 class UserLogout(APIView):
 	permission_classes = (permissions.AllowAny,)
 	authentication_classes = ()
@@ -56,7 +56,7 @@ class UserLogout(APIView):
 		logout(request)
 		return Response(status=status.HTTP_200_OK)
 	
-@method_decorator(ensure_csrf_cookie, name='dispatch')
+
 class UserTest(APIView):
 	permission_classes = (permissions.AllowAny,)
 	authentication_classes = ()
@@ -65,7 +65,6 @@ class UserTest(APIView):
 		serializer = UserSerializer(user)
 		return Response({'user': serializer.data}, status=status.HTTP_200_OK)
 
-@method_decorator(ensure_csrf_cookie, name='dispatch')
 class UserView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 	authentication_classes = (SessionAuthentication,)
@@ -74,7 +73,7 @@ class UserView(APIView):
 		response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
 		return response
 
-@method_decorator(ensure_csrf_cookie, name='dispatch')
+
 class CategoryRegister(APIView):
 	permission_classes = (permissions.AllowAny,)
 	def post(self, request):
@@ -86,7 +85,7 @@ class CategoryRegister(APIView):
 				return response
 		return Response(status=status.HTTP_400_BAD_REQUEST)
 	
-@method_decorator(ensure_csrf_cookie, name='dispatch')
+
 class BudgetRegister(APIView):
 	permission_classes = (permissions.AllowAny,)
 	authentication_classes = (SessionAuthentication,)
@@ -121,7 +120,7 @@ class TransactionRegister(APIView):
 				return response
 		return Response(status=status.HTTP_400_BAD_REQUEST)
 
-@method_decorator(ensure_csrf_cookie, name='dispatch')
+
 class MerchantRegister(APIView):
 	permission_classes = (permissions.AllowAny,)
 	def post(self, request):
