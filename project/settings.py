@@ -39,7 +39,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://myfinancejb-2225ee8966e8.herokuapp.com',
     'http://my-finance-b.netlify.app'
 ]
-
+CORS_EXPOSE_HEADERS = ["X-CSRFTOKEN"]
 
 CORS_ALLOW_HEADERS = list(default_headers) + ['Set-Cookie', 'X-CSRFTOKEN', 'csrftoken']
 CSRF_TRUSTED_ORIGINS = ['https://*my-finance-b.netlify.app/', 'https://*my-finance-b.netlify.app', 'http://*my-finance-b.netlify.app','http://*.127.0.0.1:3000']
@@ -75,6 +75,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'custom_middleware.CsrfHeaderMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
