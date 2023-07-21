@@ -53,6 +53,10 @@ CSRF_USE_SESSIONS = False
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_COOKIE_HTTPONLY = False
 
+CORS_ORIGIN_WHITELIST = [
+    'https://my-finance-b.netlify.app'
+]
+
 CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken"]
 INSTALLED_APPS = [
     'corsheaders',
