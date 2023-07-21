@@ -11,3 +11,11 @@ class CsrfHeaderMiddleware(MiddlewareMixin):
             response["Set-Cookie"] = a + b
             response["X-CSRFTOKEN"] = request.META['CSRF_COOKIE']
         return response
+    
+        # I am now using JWT Authentication with django-rest-framework-simplejwt. Everything works fine and its less code. awesome! 
+        # I am now using JWT Authentication with django-rest-framework-simplejwt. Everything works fine and its less code. awesome! 
+        # I am now using JWT Authentication with django-rest-framework-simplejwt. Everything works fine and its less code. awesome! 
+        # I am now using JWT Authentication with django-rest-framework-simplejwt. Everything works fine and its less code. awesome! 
+        # I am now using JWT Authentication with django-rest-framework-simplejwt. Everything works fine and its less code. awesome! 
+        # I am now using JWT Authentication with django-rest-framework-simplejwt. Everything works fine and its less code. awesome! 
+        # I am now using JWT Authentication with django-rest-framework-simplejwt. Everything works fine and its less code. awesome! 

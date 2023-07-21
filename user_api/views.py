@@ -16,6 +16,25 @@ from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from django.utils.decorators import method_decorator
 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+from rest_framework_simplejwt.tokens import RefreshToken
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['username'] = user.username
+        # ...
+        return token
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+    
 
 class UserRegister(APIView):
 	permission_classes = (permissions.AllowAny,)
@@ -57,7 +76,18 @@ class UserLogout(APIView):
 	def post(self, request):
 		logout(request)
 		return Response(status=status.HTTP_200_OK)
-	
+
+class LogoutView(APIView):     
+	permission_classes = (permissions.IsAuthenticated,)    
+	def post(self, request):
+		try:               
+			refresh_token = request.data["refresh_token"]              
+			token = RefreshToken(refresh_token)               
+			token.blacklist()               
+			return Response(status=status.HTTP_205_RESET_CONTENT)          
+		except Exception as e:  
+			print(e)             
+			return Response(status=status.HTTP_400_BAD_REQUEST)	
 
 class UserTest(APIView):
 	permission_classes = (permissions.AllowAny,)
@@ -76,6 +106,11 @@ class UserView(APIView):
 		response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
 		return response
 
+class HomeView(APIView):
+	permission_classes = (permissions.IsAuthenticated,)
+	def get(self, request):       
+			content = {'message': 'Welcome to the JWT Authentication page using React Js and Django!'}   
+			return Response(content)
 
 class CategoryRegister(APIView):
 	permission_classes = (permissions.AllowAny,)
