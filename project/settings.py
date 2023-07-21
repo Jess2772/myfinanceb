@@ -40,38 +40,20 @@ CORS_ALLOWED_ORIGINS = [
     'http://my-finance-b.netlify.app'
 ]
 
-#CSRF_COOKIE_NAME = "XCSRF-TOKEN"
-# CORS_ALLOW_HEADERS = ['content-disposition', 'accept-encoding',
-#                       'content-type', 'accept', 'origin', 'authorization', 'Access-Control-Allow-Origin', 'X-CSRFToken', 'csrftoken']
-CORS_ALLOW_HEADERS = list(default_headers) + ['Set-Cookie', 'X-CSRFTOKEN']
-# CSRF_TRUSTED_ORIGINS = [
-#     'https://incredible-caramel-35da02.netlify.app/',
-#     'http://incredible-caramel-35da02.netlify.app/',
-# ]
+
+CORS_ALLOW_HEADERS = list(default_headers) + ['Set-Cookie', 'X-CSRFTOKEN', 'csrftoken']
 CSRF_TRUSTED_ORIGINS = ['https://*my-finance-b.netlify.app/', 'https://*my-finance-b.netlify.app', 'http://*my-finance-b.netlify.app','http://*.127.0.0.1:3000']
 
 CORS_ALLOW_METHODS = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']
-
-# CORS_ORIGIN_WHITELIST = (
-#     'http://localhost:3000',
-#     'http://127.0.0.1:3000',
-#     'https://myfinancejb-2225ee8966e8.herokuapp.com',
-#     'https://incredible-caramel-35da02.netlify.app'
-# )
-# Application definition
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
-# XCSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_SAMESITE = 'None'
-# XCSRF_COOKIE_SAMESITE = None
-#CSRF_COOKIE_HTTPONLY = False
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_COOKIE_HTTPONLY = False
 
 CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken"]
-# SESSION_COOKIE_SAMESITE_FORCE_ALL = True
 INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.admin',
