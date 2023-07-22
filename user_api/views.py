@@ -15,12 +15,12 @@ from django.utils import timezone
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from django.utils.decorators import method_decorator
-
+from django.core.serializers import serialize
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-
+import json
 from rest_framework_simplejwt.tokens import RefreshToken
-
+from django.forms.models import model_to_dict
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -31,11 +31,9 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         # ...
         return token
 
-
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
     
-
 class UserRegister(APIView):
 	permission_classes = (permissions.AllowAny,)
 	def post(self, request):
@@ -109,7 +107,7 @@ class UserView(APIView):
 class HomeView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 	def get(self, request):       
-			content = {'message': 'Welcome to the JWT Authentication page using React Js and Django!'}   
+			content = {'message': 'Still a work in progress....'}   
 			return Response(content)
 
 class CategoryRegister(APIView):
@@ -126,9 +124,8 @@ class CategoryRegister(APIView):
 
 class BudgetRegister(APIView):
 	permission_classes = (permissions.AllowAny,)
-	authentication_classes = (SessionAuthentication,)
 	def post(self, request):
-		user_id = _get_user_session_key(request)
+		user_id = request.data['user_id']
 		serializer = BudgetRegisterSerializer(data=request.data)
 		if serializer.is_valid(raise_exception=True):
 			Budget.objects.filter(user_id = user_id, is_active = 'Y').update(is_active = 'N', eff_to = datetime.now(tz=timezone.utc))
@@ -171,3 +168,15 @@ class MerchantRegister(APIView):
 				response = Response(serializer.data, status=status.HTTP_201_CREATED)
 				return response
 		return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class UserBudget(APIView):
+	permission_classes = (permissions.IsAuthenticated,)
+	def post(self, request):
+
+		user_id = request.data['user_id']
+		try:
+			budget = Budget.objects.get(user_id = user_id, is_active = 'Y')
+			##rsp = json.loads(serialize('json', budget), many=False)
+			return Response(model_to_dict(budget), status=status.HTTP_200_OK)
+		except Budget.DoesNotExist:
+			return Response(status=status.HTTP_404_NOT_FOUND)
