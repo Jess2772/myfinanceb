@@ -21,6 +21,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 import json
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.forms.models import model_to_dict
+import jwt
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -196,4 +197,18 @@ class UserTransaction(APIView):
 			return Response(status=status.HTTP_200_OK)
 		return Response({"detail": "Error when saving record"}, status=status.HTTP_400_BAD_REQUEST)
 
-		
+
+class UserSpending(APIView):
+	permission_classes = (permissions.IsAuthenticated,)
+	def post(self, request):
+		pymt = {"CC": "Credit Card", "DC": "Debit Card", "CH": "Cash"}
+		user_id = request.data['user_id']
+		try:
+			transactions = Transaction.objects.filter(user_id = user_id).values()
+			for transaction in transactions:
+				transaction['category'] = Categories.objects.get(category_id=transaction['category_id']).name
+				transaction['merchant'] = Merchant.objects.get(merchant_id=transaction['merchant_id']).merchant_name
+				transaction['pymt_method_full'] = pymt[transaction['pymt_method']]
+			return Response(transactions, status=status.HTTP_200_OK)
+		except:
+			return Response(status=status.HTTP_404_NOT_FOUND)
