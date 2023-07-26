@@ -35,7 +35,7 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
 	    
 class Categories(models.Model): # Mapping table
     category_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=20, null=False, blank=False)
+    name = models.CharField(max_length=20, null=True, blank=True, unique=True)
     abbr = models.CharField(max_length=2, null=False, blank=False)
     class Meta:
         managed = True
@@ -44,8 +44,8 @@ class Categories(models.Model): # Mapping table
 
 class Merchant(models.Model):
     merchant_id = models.AutoField(primary_key=True)
-    merchant_name = models.CharField(max_length=50, null=False, blank=False)
-    category =  models.ForeignKey(Categories, on_delete=models.CASCADE, null=True, blank=False)
+    merchant_name = models.CharField(max_length=50, null=False, blank=False, unique=True)
+    category = models.ForeignKey(Categories, on_delete=models.CASCADE, null=True, blank=False)
     class Meta:
         managed = True
         db_table = "merchant_xref"

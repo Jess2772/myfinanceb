@@ -169,10 +169,10 @@ class MerchantRegister(APIView):
 				return response
 		return Response(status=status.HTTP_400_BAD_REQUEST)
 
+
 class UserBudget(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 	def post(self, request):
-
 		user_id = request.data['user_id']
 		try:
 			budget = Budget.objects.get(user_id = user_id, is_active = 'Y')
@@ -180,3 +180,20 @@ class UserBudget(APIView):
 			return Response(model_to_dict(budget), status=status.HTTP_200_OK)
 		except Budget.DoesNotExist:
 			return Response(status=status.HTTP_404_NOT_FOUND)
+		
+class UserTransaction(APIView):
+	permission_classes = (permissions.IsAuthenticated,)
+	def post(self, request):
+		user_id = request.data['user_id']
+		category = request.data['category']
+		merchant = request.data['merchant']
+		category_id = Categories.objects.get_or_create(name=category)[0].category_id
+		merchant_id = Merchant.objects.get_or_create(merchant_name=merchant, category=Categories(category_id=category_id))[0].merchant_id
+		serializer = TransactionRegisterSerializer(data=request.data)
+		sys.stdout.flush()
+		if serializer.is_valid(raise_exception=True):
+			transaction = serializer.create(request.data, user_id, category_id, merchant_id)
+			return Response(status=status.HTTP_200_OK)
+		return Response({"detail": "Error when saving record"}, status=status.HTTP_400_BAD_REQUEST)
+
+		

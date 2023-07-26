@@ -14,7 +14,7 @@ urlpatterns = [
     path('user/budget', views.UserBudget.as_view(), name='user_budget'),
     path('transaction', views.TransactionRegister.as_view(), name='transaction'),
     path('merchant', views.MerchantRegister.as_view(), name='merchant'),
-    path('userTest', views.UserTest.as_view(), name='userTest'),
+    path('user/transaction', views.UserTransaction.as_view(), name ='add_transaction'),
     path('home', views.HomeView.as_view(), name ='home'),
     path('token/', 
           MyTokenObtainPairView.as_view(), 
