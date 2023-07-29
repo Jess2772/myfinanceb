@@ -22,6 +22,8 @@ import json
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.forms.models import model_to_dict
 import jwt
+from django.db.models import Sum
+
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -170,14 +172,12 @@ class MerchantRegister(APIView):
 				return response
 		return Response(status=status.HTTP_400_BAD_REQUEST)
 
-
 class UserBudget(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 	def post(self, request):
 		user_id = request.data['user_id']
 		try:
 			budget = Budget.objects.get(user_id = user_id, is_active = 'Y')
-			##rsp = json.loads(serialize('json', budget), many=False)
 			return Response(model_to_dict(budget), status=status.HTTP_200_OK)
 		except Budget.DoesNotExist:
 			return Response(status=status.HTTP_404_NOT_FOUND)
@@ -191,7 +191,6 @@ class UserTransaction(APIView):
 		category_id = Categories.objects.get_or_create(name=category)[0].category_id
 		merchant_id = Merchant.objects.get_or_create(merchant_name=merchant, category=Categories(category_id=category_id))[0].merchant_id
 		serializer = TransactionRegisterSerializer(data=request.data)
-		sys.stdout.flush()
 		if serializer.is_valid(raise_exception=True):
 			transaction = serializer.create(request.data, user_id, category_id, merchant_id)
 			return Response(status=status.HTTP_200_OK)
@@ -204,7 +203,7 @@ class UserSpending(APIView):
 		pymt = {"CC": "Credit Card", "DC": "Debit Card", "CH": "Cash"}
 		user_id = request.data['user_id']
 		try:
-			transactions = Transaction.objects.filter(user_id = user_id).values()
+			transactions = Transaction.objects.filter(user_id = user_id).order_by('-transaction_date').values()
 			for transaction in transactions:
 				transaction['category'] = Categories.objects.get(category_id=transaction['category_id']).name
 				transaction['merchant'] = Merchant.objects.get(merchant_id=transaction['merchant_id']).merchant_name
@@ -212,3 +211,30 @@ class UserSpending(APIView):
 			return Response(transactions, status=status.HTTP_200_OK)
 		except:
 			return Response(status=status.HTTP_404_NOT_FOUND)
+		
+
+class UserSpendingByCategory(APIView):
+	permission_classes = (permissions.IsAuthenticated,)
+	def post(self, request):
+		user_id = request.data['user_id']
+		date_from = request.data['date_from']
+		date_to = request.data['date_to']
+		categories = request.data['category_names']
+		rsp = []
+	
+		for category in categories:
+			obj = {}
+			category_id = Categories.objects.get(name=category).category_id
+			obj['id'] = category_id
+			obj['label'] = category
+			try:
+				tot_amount = Transaction.objects.filter(transaction_date__gte=date_from, transaction_date__lte=date_to, category_id=category_id).aggregate(s=Sum('amount'))['s']
+				if (tot_amount) == None:
+					obj['value'] = 0
+				else:
+					obj['value'] = tot_amount
+			except:
+				obj['value'] = 0
+			rsp.append(obj)
+		return Response({'pie': rsp}, status=status.HTTP_200_OK)
+

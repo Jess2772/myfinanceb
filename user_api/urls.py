@@ -16,6 +16,7 @@ urlpatterns = [
     path('merchant', views.MerchantRegister.as_view(), name='merchant'),
     path('user/transaction', views.UserTransaction.as_view(), name ='add_transaction'),
     path('user/spending', views.UserSpending.as_view(), name ='spending'),
+    path('user/spending/category', views.UserSpendingByCategory.as_view(), name ='spending_categories'),
     path('home', views.HomeView.as_view(), name ='home'),
     path('token/', 
           MyTokenObtainPairView.as_view(), 
