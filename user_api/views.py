@@ -220,21 +220,36 @@ class UserSpendingByCategory(APIView):
 		date_from = request.data['date_from']
 		date_to = request.data['date_to']
 		categories = request.data['category_names']
-		rsp = []
+		amountByCategory = []
+		countByCategory = []
 	
 		for category in categories:
-			obj = {}
+			amount = {}
+			count = {}
 			category_id = Categories.objects.get(name=category).category_id
-			obj['id'] = category_id
-			obj['label'] = category
+			amount['id'] = category_id
+			amount['label'] = category
+			count['id'] = category_id
+			count['label'] = category
 			try:
-				tot_amount = Transaction.objects.filter(transaction_date__gte=date_from, transaction_date__lte=date_to, category_id=category_id).aggregate(s=Sum('amount'))['s']
-				if (tot_amount) == None:
-					obj['value'] = 0
+				transactions = Transaction.objects.filter(transaction_date__gte=date_from, transaction_date__lte=date_to, category_id=category_id)
+				numTransactions = transactions.count()
+				if (numTransactions == 0):
+					amount['value'] = 0
+					count['value'] = 0
+					amountByCategory.append(amount)
+					countByCategory.append(count)
 				else:
-					obj['value'] = tot_amount
+					tot_amount = transactions.aggregate(s=Sum('amount'))['s']
+					amount['value'] = tot_amount
+					amountByCategory.append(amount)
+					count['value'] = numTransactions
+					countByCategory.append(count)
 			except:
-				obj['value'] = 0
-			rsp.append(obj)
-		return Response({'pie': rsp}, status=status.HTTP_200_OK)
+				amount['value'] = 0
+				amountByCategory.append(amount)
+				count['value'] = 0
+				countByCategory.append(count)
+			
+		return Response({'amountByCategory': amountByCategory, 'countByCategory': countByCategory}, status=status.HTTP_200_OK)
 
