@@ -22,7 +22,7 @@ import json
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.forms.models import model_to_dict
 import jwt
-from django.db.models import Sum
+from django.db.models import Sum, Count
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -222,34 +222,38 @@ class UserSpendingByCategory(APIView):
 		categories = request.data['category_names']
 		amountByCategory = []
 		countByCategory = []
+		merchantCountByCategory = []
 	
 		for category in categories:
 			amount = {}
 			count = {}
+			merchant = {}
 			category_id = Categories.objects.get(name=category).category_id
-			amount['id'] = category_id
-			amount['label'] = category
-			count['id'] = category_id
-			count['label'] = category
+			amount['id'] = count['id'] = merchant['id'] = category_id
+			amount['label'] = count['label'] = merchant['label'] = category 
+	
 			try:
 				transactions = Transaction.objects.filter(transaction_date__gte=date_from, transaction_date__lte=date_to, category_id=category_id)
 				numTransactions = transactions.count()
+				topMerchant = transactions.values('merchant_id').annotate(total=Count('merchant_id')).order_by('total')[0]
+				topMerchantName = Merchant.objects.get(merchant_id=topMerchant['merchant_id']).merchant_name
+				
 				if (numTransactions == 0):
-					amount['value'] = 0
-					count['value'] = 0
-					amountByCategory.append(amount)
-					countByCategory.append(count)
+					amount['value'] = count['value'] = merchant['value'] = 0
+
 				else:
 					tot_amount = transactions.aggregate(s=Sum('amount'))['s']
 					amount['value'] = tot_amount
-					amountByCategory.append(amount)
 					count['value'] = numTransactions
-					countByCategory.append(count)
+					merchant['label'] = topMerchantName
+					merchant['value'] = topMerchant['total']
+					
 			except:
-				amount['value'] = 0
-				amountByCategory.append(amount)
-				count['value'] = 0
-				countByCategory.append(count)
-			
-		return Response({'amountByCategory': amountByCategory, 'countByCategory': countByCategory}, status=status.HTTP_200_OK)
+				amount['value'] = count['value'] = merchant['value'] = 0
+
+			amountByCategory.append(amount)
+			countByCategory.append(count)
+			merchantCountByCategory.append(merchant)
+
+		return Response({'amountByCategory': amountByCategory, 'countByCategory': countByCategory, 'merchantCountByCategory': merchantCountByCategory}, status=status.HTTP_200_OK)
 
