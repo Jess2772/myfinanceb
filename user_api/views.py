@@ -23,6 +23,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.forms.models import model_to_dict
 import jwt
 from django.db.models import Sum, Count
+import datetime
+from datetime import date
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -233,7 +235,7 @@ class UserSpendingByCategory(APIView):
 			amount['label'] = count['label'] = merchant['label'] = category 
 	
 			try:
-				transactions = Transaction.objects.filter(transaction_date__gte=date_from, transaction_date__lte=date_to, category_id=category_id)
+				transactions = Transaction.objects.filter(user_id=user_id, transaction_date__gte=date_from, transaction_date__lte=date_to, category_id=category_id)
 				numTransactions = transactions.count()
 				topMerchant = transactions.values('merchant_id').annotate(total=Count('merchant_id')).order_by('total')[0]
 				topMerchantName = Merchant.objects.get(merchant_id=topMerchant['merchant_id']).merchant_name
@@ -257,3 +259,39 @@ class UserSpendingByCategory(APIView):
 
 		return Response({'amountByCategory': amountByCategory, 'countByCategory': countByCategory, 'merchantCountByCategory': merchantCountByCategory}, status=status.HTTP_200_OK)
 
+
+class UserMonthSpending(APIView):
+	permission_classes = (permissions.IsAuthenticated,)
+	def post(self, request):
+		pymt = {"CC": "Credit Card", "DC": "Debit Card", "CH": "Cash"}
+		categories = ["Grocery", "Healthcare", "Dining", "Clothing", "Miscellaneous", "Housing", "Utility", "Transportation", "Entertainment"] 
+		today = date.today()
+		month = today.month
+		year = today.year
+		user_id = request.data['user_id']
+		rsp = {}
+		for c in categories:
+			category_id = Categories.objects.get(name=c).category_id
+			categoryData = {'spentThisMonth': 0, 'transactions': []}
+			try:
+				# name of category, amount spent this month, transactions for this month
+				transactions = Transaction.objects.filter(user_id = user_id, category_id=category_id, transaction_date__month=month, transaction_date__year=year).order_by('-transaction_date')
+				amount = transactions.aggregate(s=Sum('amount'))['s']
+				if (amount == None):
+					categoryData['spentThisMonth'] = 0
+				else:
+					categoryData['spentThisMonth'] = amount
+				categoryData['transactions'] = transactions.values()
+				
+				for transaction in categoryData['transactions']:
+					transaction['merchant'] = Merchant.objects.get(merchant_id=transaction['merchant_id']).merchant_name
+					transaction['pymt_method_full'] = pymt[transaction['pymt_method']]
+				
+				rsp[c] = categoryData
+			except:
+				rsp[c] = categoryData
+				print("idk")
+				sys.stdout.flush()
+
+		
+		return Response(rsp, status=status.HTTP_200_OK)
