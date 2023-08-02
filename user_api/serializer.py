@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import *
 from django.contrib.auth import get_user_model, authenticate
 from django.core.exceptions import ValidationError
+import datetime
 from datetime import datetime
 from django.utils import timezone
 class TransactionSerializer(serializers.ModelSerializer):
@@ -49,18 +50,15 @@ class CategoryRegisterSerializer(serializers.ModelSerializer):
 		fields = '__all__'
 	
 	def validate(self, data):
-		name = data['name'].strip()
-		abbr = data['abbr'].strip()
+		category_name = data['category_name'].strip()
 
-		if not name or Categories.objects.filter(name=name).exists():
+		if not category_name or Categories.objects.filter(category_name=category_name).exists():
 			raise ValidationError('Category already exists.')
 		
-		if not abbr or len(abbr) != 2:
-			raise ValidationError('Invalid abbreviation.')
 		return data
 	
 	def create(self, data):
-		category_obj = Categories.objects.create(name=data['name'], abbr=data['abbr'])
+		category_obj = Categories.objects.create(name=data['category_name'].strip(), last_modified=datetime.now(tz=timezone.utc))
 		return category_obj
 	
 class BudgetSerializer(serializers.ModelSerializer):
@@ -82,7 +80,6 @@ class BudgetRegisterSerializer(serializers.ModelSerializer):
 		grocery_lmt = data['grocery_lmt'] if 'grocery_lmt' in data else None
 		healthcare_lmt = data['healthcare_lmt'] if 'healthcare_lmt' in data else None
 		dining_lmt = data['dining_lmt'] if 'dining_lmt' in data else None
-		personal_care_lmt = data['personal_care_lmt'] if 'personal_care_lmt' in data else None 
 		entertainment_lmt = data['entertainment_lmt'] if 'entertainment_lmt' in data else None
 		clothing_lmt = data['clothing_lmt'] if 'clothing_lmt' in data else None
 		miscellaneous_lmt = data['miscellaneous_lmt'] if 'miscellaneous_lmt' in data else None
@@ -110,9 +107,6 @@ class BudgetRegisterSerializer(serializers.ModelSerializer):
 
 		if dining_lmt and dining_lmt < 0:
 			raise ValidationError('Invalid dining limit amount')
-
-		if personal_care_lmt and personal_care_lmt < 0:
-			raise ValidationError('Invalid personal care limit amount')
 		
 		if entertainment_lmt and entertainment_lmt < 0:
 			raise ValidationError('Invalid entertainment limit amount')
@@ -136,7 +130,6 @@ class BudgetRegisterSerializer(serializers.ModelSerializer):
 			grocery_lmt = data['grocery_lmt'] if 'grocery_lmt' in data else None,
 			healthcare_lmt = data['healthcare_lmt'] if 'healthcare_lmt' in data else None,
 			dining_lmt = data['dining_lmt'] if 'dining_lmt' in data else None,
-			personal_care_lmt = data['personal_care_lmt'] if 'personal_care_lmt' in data else None,
 			entertainment_lmt = data['entertainment_lmt'] if 'entertainment_lmt' in data else None,
 			clothing_lmt = data['clothing_lmt'] if 'clothing_lmt' in data else None,
 			miscellaneous_lmt = data['miscellaneous_lmt'] if 'miscellaneous_lmt' in data else None,
@@ -194,6 +187,7 @@ class MerchantRegisterSerializer(serializers.ModelSerializer):
 	def create(self, data, category_id):
 		merchant_obj = Merchant.objects.create(
 			category_id = category_id,
-			merchant_name = data['merchant_name']
+			merchant_name = data['merchant_name'].strip(),
+			last_modified=datetime.now(tz=timezone.utc)
 		)
 		return merchant_obj

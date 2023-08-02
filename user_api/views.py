@@ -21,10 +21,9 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 import json
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.forms.models import model_to_dict
-import jwt
 from django.db.models import Sum, Count
 import datetime
-from datetime import date
+from datetime import date, datetime
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -45,8 +44,6 @@ class UserRegister(APIView):
 		clean_data = custom_validation(request.data)
 		serializer = UserRegisterSerializer(data=clean_data)
 		if serializer.is_valid(raise_exception=True):
-			print("valid credentials, registering")
-			sys.stdout.flush()
 			user = serializer.create(clean_data)
 			if user:
 				response = Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -57,8 +54,6 @@ class UserRegister(APIView):
 class UserLogin(APIView):
 	permission_classes = (permissions.AllowAny,)
 	authentication_classes = (SessionAuthentication,)
-	@csrf_exempt
-	@method_decorator(ensure_csrf_cookie)
 	def post(self, request):
 		data = request.data
 		assert validate_email(data)
@@ -71,14 +66,6 @@ class UserLogin(APIView):
 			login(request, user)
 			response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
 			return response
-		
-
-class UserLogout(APIView):
-	permission_classes = (permissions.AllowAny,)
-	authentication_classes = ()
-	def post(self, request):
-		logout(request)
-		return Response(status=status.HTTP_200_OK)
 
 class LogoutView(APIView):     
 	permission_classes = (permissions.IsAuthenticated,)    
@@ -91,14 +78,6 @@ class LogoutView(APIView):
 		except Exception as e:  
 			print(e)             
 			return Response(status=status.HTTP_400_BAD_REQUEST)	
-
-class UserTest(APIView):
-	permission_classes = (permissions.AllowAny,)
-	authentication_classes = ()
-	def get(self, request):
-		user = UserModel.objects.get(user_id=_get_user_session_key(request))
-		serializer = UserSerializer(user)
-		return Response({'user': serializer.data}, status=status.HTTP_200_OK)
 
 class UserView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
@@ -141,7 +120,6 @@ class BudgetRegister(APIView):
 				return response
 		return Response(status=status.HTTP_400_BAD_REQUEST)
 	
-@method_decorator(ensure_csrf_cookie, name='dispatch')
 class TransactionRegister(APIView):
 	permission_classes = (permissions.AllowAny,)
 	authentication_classes = (SessionAuthentication,)
@@ -190,7 +168,7 @@ class UserTransaction(APIView):
 		user_id = request.data['user_id']
 		category = request.data['category']
 		merchant = request.data['merchant']
-		category_id = Categories.objects.get_or_create(name=category)[0].category_id
+		category_id = Categories.objects.get_or_create(category_name=category)[0].category_id
 		merchant_id = Merchant.objects.get_or_create(merchant_name=merchant, category=Categories(category_id=category_id))[0].merchant_id
 		serializer = TransactionRegisterSerializer(data=request.data)
 		if serializer.is_valid(raise_exception=True):
@@ -207,7 +185,7 @@ class UserSpending(APIView):
 		try:
 			transactions = Transaction.objects.filter(user_id = user_id).order_by('-transaction_date').values()
 			for transaction in transactions:
-				transaction['category'] = Categories.objects.get(category_id=transaction['category_id']).name
+				transaction['category'] = Categories.objects.get(category_id=transaction['category_id']).category_name
 				transaction['merchant'] = Merchant.objects.get(merchant_id=transaction['merchant_id']).merchant_name
 				transaction['pymt_method_full'] = pymt[transaction['pymt_method']]
 			return Response(transactions, status=status.HTTP_200_OK)
@@ -230,7 +208,7 @@ class UserSpendingByCategory(APIView):
 			amount = {}
 			count = {}
 			merchant = {}
-			category_id = Categories.objects.get(name=category).category_id
+			category_id = Categories.objects.get(category_name=category).category_id
 			amount['id'] = count['id'] = merchant['id'] = category_id
 			amount['label'] = count['label'] = merchant['label'] = category 
 	
@@ -271,7 +249,7 @@ class UserMonthSpending(APIView):
 		user_id = request.data['user_id']
 		rsp = {}
 		for c in categories:
-			category_id = Categories.objects.get(name=c).category_id
+			category_id = Categories.objects.get(category_name=c).category_id
 			categoryData = {'spentThisMonth': 0, 'transactions': []}
 			try:
 				# name of category, amount spent this month, transactions for this month

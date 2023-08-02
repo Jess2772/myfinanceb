@@ -33,10 +33,10 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
 	def __str__(self):
 		return self.username
 	    
-class Categories(models.Model): # Mapping table
+class Categories(models.Model):
     category_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=20, null=True, blank=True, unique=True)
-    abbr = models.CharField(max_length=2, null=False, blank=False)
+    category_name = models.CharField(max_length=20, null=False, blank=False, unique=True)
+    last_modified = models.DateTimeField(null=True, blank=True)
     class Meta:
         managed = True
         db_table = "category"
@@ -46,6 +46,7 @@ class Merchant(models.Model):
     merchant_id = models.AutoField(primary_key=True)
     merchant_name = models.CharField(max_length=50, null=False, blank=False, unique=True)
     category = models.ForeignKey(Categories, on_delete=models.CASCADE, null=True, blank=False)
+    last_modified = models.DateTimeField(null=True, blank=True)
     class Meta:
         managed = True
         db_table = "merchant_xref"
@@ -58,6 +59,7 @@ class Transaction(models.Model):
     amount = models.DecimalField(decimal_places=2, max_digits=10, null=False, blank=False)
     transaction_date = models.DateField(null=False, blank=False)
     pymt_method = models.CharField(max_length=2, blank=True)
+    
     class Meta:
         managed = True
         db_table = "transaction"
@@ -74,7 +76,6 @@ class Budget(models.Model):
     grocery_lmt = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
     healthcare_lmt = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
     dining_lmt = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
-    personal_care_lmt = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
     entertainment_lmt = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
     clothing_lmt = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
     miscellaneous_lmt = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True) # any expenses that come up randomly
@@ -95,11 +96,3 @@ class Income(models.Model):
     class Meta:
         managed = True
         db_table = "income"
-
-class TransactionCodes:
-    HOUSING = 'HS'
-    GROCERY = 'GC'
-    ENTERTAINMENT = 'ET' 
-    TRANSPORTATION = 'TP'
-    TOILETRIES = 'TL'
-    SUBSCRIPTION = 'SC'
