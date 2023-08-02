@@ -88,12 +88,6 @@ class UserView(APIView):
 		response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
 		return response
 
-class HomeView(APIView):
-	permission_classes = (permissions.IsAuthenticated,)
-	def get(self, request):       
-			content = {'message': 'Still a work in progress....'}   
-			return Response(content)
-
 class CategoryRegister(APIView):
 	permission_classes = (permissions.AllowAny,)
 	def post(self, request):

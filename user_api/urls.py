@@ -17,7 +17,6 @@ urlpatterns = [
     path('user/spending', views.UserSpending.as_view(), name ='spending'),
     path('user/spending/category', views.UserSpendingByCategory.as_view(), name ='spending_categories'),
     path('user/spending/month', views.UserMonthSpending.as_view(), name ='spending_month'),
-    path('home', views.HomeView.as_view(), name ='home'),
     path('token/', 
           MyTokenObtainPairView.as_view(), 
           name ='token_obtain_pair'),
