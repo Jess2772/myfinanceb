@@ -240,6 +240,7 @@ class UserMonthSpending(APIView):
 		today = date.today()
 		month = today.month
 		year = today.year
+		totalSpent = 0
 		user_id = request.data['user_id']
 		rsp = {}
 		for c in categories:
@@ -253,6 +254,7 @@ class UserMonthSpending(APIView):
 					categoryData['spentThisMonth'] = 0
 				else:
 					categoryData['spentThisMonth'] = amount
+					totalSpent += amount
 				categoryData['transactions'] = transactions.values()
 				
 				for transaction in categoryData['transactions']:
@@ -264,6 +266,6 @@ class UserMonthSpending(APIView):
 				rsp[c] = categoryData
 				print("idk")
 				sys.stdout.flush()
-
+		rsp['totalSpent'] = totalSpent
 		
 		return Response(rsp, status=status.HTTP_200_OK)
