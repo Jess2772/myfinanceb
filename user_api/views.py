@@ -209,7 +209,7 @@ class UserSpendingByCategory(APIView):
 			try:
 				transactions = Transaction.objects.filter(user_id=user_id, transaction_date__gte=date_from, transaction_date__lte=date_to, category_id=category_id)
 				numTransactions = transactions.count()
-				topMerchant = transactions.values('merchant_id').annotate(total=Count('merchant_id')).order_by('total')[0]
+				topMerchant = transactions.values('merchant_id').annotate(total=Count('merchant_id')).order_by('-total')[0]
 				topMerchantName = Merchant.objects.get(merchant_id=topMerchant['merchant_id']).merchant_name
 				
 				if (numTransactions == 0):
