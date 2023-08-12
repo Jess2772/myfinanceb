@@ -101,9 +101,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'myfinancedb',
-        'USER': 'jesseli',
-        'PASSWORD': 'myfinancedb',
-        'HOST': 'fininst.cbppjrofpbpr.us-east-2.rds.amazonaws.com',
+        'USER': config('USER'),
+        'PASSWORD': config('PASSWORD'),
+        'HOST': config('HOST'),
         'PORT': '5432',
     }
 }

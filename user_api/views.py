@@ -12,13 +12,8 @@ from .serializer import UserRegisterSerializer, UserLoginSerializer, UserSeriali
 from rest_framework import permissions, status
 from .validations import *
 from django.utils import timezone
-from django.middleware.csrf import get_token
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
-from django.utils.decorators import method_decorator
-from django.core.serializers import serialize
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-import json
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.forms.models import model_to_dict
 from django.db.models import Sum, Count
@@ -61,8 +56,6 @@ class UserLogin(APIView):
 		serializer = UserLoginSerializer(data=data)
 		if serializer.is_valid(raise_exception=True):
 			user = serializer.check_user(data)
-			print("Sending login request")
-			sys.stdout.flush()
 			login(request, user)
 			response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
 			return response
@@ -75,14 +68,12 @@ class LogoutView(APIView):
 			token = RefreshToken(refresh_token)               
 			token.blacklist()               
 			return Response(status=status.HTTP_205_RESET_CONTENT)          
-		except Exception as e:  
-			print(e)             
+		except Exception as e:               
 			return Response(status=status.HTTP_400_BAD_REQUEST)	
 
 class UserView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
 	authentication_classes = (SessionAuthentication,)
-	@method_decorator(ensure_csrf_cookie)
 	def get(self, request):
 		serializer = UserSerializer(request.user)
 		response = Response({'user': serializer.data}, status=status.HTTP_200_OK)
@@ -108,7 +99,6 @@ class BudgetRegister(APIView):
 		if serializer.is_valid(raise_exception=True):
 			Budget.objects.filter(user_id = user_id, is_active = 'Y').update(is_active = 'N', eff_to = datetime.now(tz=timezone.utc))
 			budget = serializer.create(request.data, user_id)
-			# TODO: need to ensure that mandatory fields are populated, because cannot reinforce in models.py
 			if budget:
 				response = Response(serializer.data, status=status.HTTP_201_CREATED)
 				return response
@@ -126,7 +116,6 @@ class TransactionRegister(APIView):
 		serializer = TransactionRegisterSerializer(data=request.data)
 		if serializer.is_valid(raise_exception=True):
 			transaction = serializer.create(request.data, user_id, category_id, merchant_id)
-			# TODO: need to ensure that mandatory fields are populated, because cannot reinforce in models.py
 			if transaction:
 				response = Response(serializer.data, status=status.HTTP_201_CREATED)
 				return response
@@ -140,7 +129,6 @@ class MerchantRegister(APIView):
 		serializer = MerchantRegisterSerializer(data=request.data)
 		if serializer.is_valid(raise_exception=True):
 			merchant = serializer.create(request.data, category_id)
-			# TODO: need to ensure that mandatory fields are populated, because cannot reinforce in models.py
 			if merchant:
 				response = Response(serializer.data, status=status.HTTP_201_CREATED)
 				return response
@@ -247,7 +235,6 @@ class UserMonthSpending(APIView):
 			category_id = Categories.objects.get(category_name=c).category_id
 			categoryData = {'spentThisMonth': 0, 'transactions': []}
 			try:
-				# name of category, amount spent this month, transactions for this month
 				transactions = Transaction.objects.filter(user_id = user_id, category_id=category_id, transaction_date__month=month, transaction_date__year=year).order_by('-transaction_date')
 				amount = transactions.aggregate(s=Sum('amount'))['s']
 				if (amount == None):
@@ -264,8 +251,6 @@ class UserMonthSpending(APIView):
 				rsp[c] = categoryData
 			except:
 				rsp[c] = categoryData
-				print("idk")
-				sys.stdout.flush()
 		rsp['totalSpent'] = totalSpent
 		
 		return Response(rsp, status=status.HTTP_200_OK)

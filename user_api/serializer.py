@@ -38,7 +38,6 @@ class UserSerializer(serializers.ModelSerializer):
 		model = UserModel
 		fields = ('email', 'username')
 
-
 class CategoriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categories
