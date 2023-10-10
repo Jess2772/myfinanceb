@@ -10,7 +10,7 @@ No more excel sheets, if I built something I will use it
 ### Learnings
 Full-stack development (client-server communication) <br>
 Cloud hosting + deployments <br>
-Data modelling
+Data modeling
 ### Technology
 **Backend:** Django (Python)
 <br>
